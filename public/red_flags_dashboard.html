@@ -1,0 +1,458 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8"/>
+  <meta name="viewport" content="width=device-width,initial-scale=1"/>
+  <title>Red Flags Dashboard</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  <style>
+    .multiselect-dropdown {
+      position: relative;
+    }
+    .multiselect-options {
+      position: absolute;
+      top: 100%;
+      left: 0;
+      right: 0;
+      background: white;
+      border: 1px solid #d1d5db;
+      border-radius: 0.375rem;
+      margin-top: 0.25rem;
+      max-height: 200px;
+      overflow-y: auto;
+      z-index: 50;
+      box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+    }
+    .multiselect-option {
+      padding: 0.5rem 0.75rem;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
+    .multiselect-option:hover {
+      background: #f3f4f6;
+    }
+  </style>
+</head>
+<body class="bg-gray-100 font-sans">
+  <div class="min-h-screen flex">
+    <main class="flex-1 p-6">
+      <!-- Header -->
+      <!-- <header class="flex items-center justify-between mb-6">
+        <div>
+          <h2 class="text-2xl font-bold">Red Flags Dashboard</h2>
+          <p class="text-sm text-gray-600">Overview of compliance items flagged as red</p>
+        </div>
+        <div class="flex items-center gap-4">
+          <select class="border rounded px-3 py-2 text-sm">
+            <option>PROTIVITI</option>
+            <option>Client A</option>
+          </select>
+          <select class="border rounded px-3 py-2 text-sm">
+            <option>APPROVER</option>
+          </select>
+          <div class="w-10 h-10 bg-blue-500 text-white rounded-full flex items-center justify-center font-semibold">NK</div>
+        </div>
+      </header> -->
+
+      <!-- Filters -->
+      <section class="bg-white p-4 rounded shadow mb-6">
+        <h3 class="font-semibold mb-3 text-sm">Filters</h3>
+        <div class="grid grid-cols-6 gap-3 mb-3">
+          <div class="multiselect-dropdown">
+            <button id="locationFilterBtn" class="w-full border rounded px-3 py-2 text-sm text-left bg-white hover:bg-gray-50 flex justify-between items-center">
+              <span id="locationFilterText">Location</span>
+              <span>▼</span>
+            </button>
+            <div id="locationFilterOptions" class="multiselect-options hidden"></div>
+          </div>
+          <div class="multiselect-dropdown">
+            <button id="departmentFilterBtn" class="w-full border rounded px-3 py-2 text-sm text-left bg-white hover:bg-gray-50 flex justify-between items-center">
+              <span id="departmentFilterText">Department</span>
+              <span>▼</span>
+            </button>
+            <div id="departmentFilterOptions" class="multiselect-options hidden"></div>
+          </div>
+          <div class="multiselect-dropdown">
+            <button id="periodicityFilterBtn" class="w-full border rounded px-3 py-2 text-sm text-left bg-white hover:bg-gray-50 flex justify-between items-center">
+              <span id="periodicityFilterText">Periodicity</span>
+              <span>▼</span>
+            </button>
+            <div id="periodicityFilterOptions" class="multiselect-options hidden"></div>
+          </div>
+          <div class="multiselect-dropdown">
+            <button id="criticalityFilterBtn" class="w-full border rounded px-3 py-2 text-sm text-left bg-white hover:bg-gray-50 flex justify-between items-center">
+              <span id="criticalityFilterText">Criticality</span>
+              <span>▼</span>
+            </button>
+            <div id="criticalityFilterOptions" class="multiselect-options hidden"></div>
+          </div>
+          <div class="multiselect-dropdown">
+            <button id="typeFilterBtn" class="w-full border rounded px-3 py-2 text-sm text-left bg-white hover:bg-gray-50 flex justify-between items-center">
+              <span id="typeFilterText">Type</span>
+              <span>▼</span>
+            </button>
+            <div id="typeFilterOptions" class="multiselect-options hidden"></div>
+          </div>
+          <div class="multiselect-dropdown">
+            <button id="complianceFilterBtn" class="w-full border rounded px-3 py-2 text-sm text-left bg-white hover:bg-gray-50 flex justify-between items-center">
+              <span id="complianceFilterText">Compliance nature</span>
+              <span>▼</span>
+            </button>
+            <div id="complianceFilterOptions" class="multiselect-options hidden"></div>
+          </div>
+        </div>
+        <div class="flex gap-3">
+          <input type="date" id="dateRangeStart" class="border rounded px-3 py-2 text-sm">
+          <input type="date" id="dateRangeEnd" class="border rounded px-3 py-2 text-sm">
+          <button id="applyFilters" class="bg-blue-600 text-white px-4 py-2 rounded text-sm hover:bg-blue-700">Apply Filters</button>
+          <button id="resetFilters" class="bg-gray-300 text-gray-700 px-4 py-2 rounded text-sm hover:bg-gray-400">Reset</button>
+        </div>
+      </section>
+
+      <!-- KPI Tiles -->
+      <section class="grid grid-cols-4 gap-4 mb-6">
+        <div class="bg-white p-4 rounded shadow">
+          <div class="text-sm text-gray-500">Total Red Flags</div>
+          <div class="text-3xl font-bold text-blue-600">1,391</div>
+          <div class="text-xs text-gray-400 mt-2">Approved: <span class="font-semibold">801</span> · Rejected: <span class="font-semibold">590</span></div>
+        </div>
+        <div class="bg-white p-4 rounded shadow">
+          <div class="text-sm text-gray-500">This Month Change</div>
+          <div class="text-3xl font-bold text-green-600">+5.2%</div>
+          <div class="text-xs text-gray-400 mt-2">Compared to previous month</div>
+        </div>
+        <div class="bg-white p-4 rounded shadow">
+          <div class="text-sm text-gray-500">Critical</div>
+          <div class="text-3xl font-bold text-red-600">320</div>
+          <div class="text-xs text-gray-400 mt-2">High Risk Compliances</div>
+        </div>
+        <div class="bg-white p-4 rounded shadow">
+          <div class="text-sm text-gray-500">Departments Impacted</div>
+          <div class="text-3xl font-bold text-purple-600">4</div>
+          <div class="text-xs text-gray-400 mt-2">Unique departments</div>
+        </div>
+      </section>
+
+      <!-- Charts grid -->
+      <section class="grid grid-cols-2 gap-6">
+        <!-- Overall Summary -->
+        <div class="bg-white p-4 rounded shadow">
+          <h3 class="font-semibold mb-4">Overall Red Flag Summary</h3>
+          <canvas id="overallChart"></canvas>
+        </div>
+
+        <!-- Department-wise -->
+        <div class="bg-white p-4 rounded shadow">
+          <div class="flex justify-between items-center mb-4">
+            <h3 class="font-semibold">Department-wise Red Flags</h3>
+            <div class="multiselect-dropdown">
+              <button id="departmentChartBtn" class="border rounded px-2 py-1 text-sm bg-white hover:bg-gray-50 flex items-center gap-2">
+                <span id="departmentChartText">Select Departments</span>
+                <span>▼</span>
+              </button>
+              <div id="departmentChartOptions" class="multiselect-options hidden"></div>
+            </div>
+          </div>
+          <canvas id="departmentChart"></canvas>
+        </div>
+
+        <!-- Location-wise -->
+        <div class="bg-white p-4 rounded shadow">
+          <div class="flex justify-between items-center mb-4">
+            <h3 class="font-semibold">Location-wise Red Flags</h3>
+            <div class="multiselect-dropdown">
+              <button id="locationChartBtn" class="border rounded px-2 py-1 text-sm bg-white hover:bg-gray-50 flex items-center gap-2">
+                <span id="locationChartText">Select Locations</span>
+                <span>▼</span>
+              </button>
+              <div id="locationChartOptions" class="multiselect-options hidden"></div>
+            </div>
+          </div>
+          <canvas id="locationChart"></canvas>
+        </div>
+
+        <!-- Criticality-wise -->
+        <div class="bg-white p-4 rounded shadow">
+          <h3 class="font-semibold mb-4">Criticality-wise Red Flags</h3>
+          <canvas id="criticalityChart"></canvas>
+        </div>
+
+        <!-- Nature-wise -->
+        <div class="bg-white p-4 rounded shadow">
+          <h3 class="font-semibold mb-4">Compliance Nature-wise</h3>
+          <canvas id="natureChart"></canvas>
+        </div>
+
+        <!-- Approver-wise -->
+        <div class="bg-white p-4 rounded shadow">
+          <div class="flex justify-between items-center mb-4">
+            <h3 class="font-semibold">Approver-wise Red Flags</h3>
+            <div class="multiselect-dropdown">
+              <button id="approverChartBtn" class="border rounded px-2 py-1 text-sm bg-white hover:bg-gray-50 flex items-center gap-2">
+                <span id="approverChartText">ALL</span>
+                <span>▼</span>
+              </button>
+              <div id="approverChartOptions" class="multiselect-options hidden"></div>
+            </div>
+          </div>
+          <canvas id="approverChart"></canvas>
+        </div>
+      </section>
+    </main>
+  </div>
+
+  <script>
+    const data = {
+      locations: ['Delhi', 'Mumbai', 'Gurugram', 'Pune', 'Bangalore', 'Hyderabad'],
+      departments: ['HR', 'Finance', 'IT', 'Education', 'Operations', 'Legal', 'Marketing'],
+      periodicities: ['Daily', 'Weekly', 'Monthly', 'Quarterly', 'Annually'],
+      criticalities: ['High', 'Medium', 'Low'],
+      types: ['Internal', 'Statutory'],
+      approvers: ['Alice', 'Bob', 'Charlie', 'Diana', 'Eve'],
+      compliance: ['Statutory', 'Internal', 'Contractual', 'Customer', 'System', 'Other'],
+      approverData: {
+        Alice: { approved: 120, rejected: 30 },
+        Bob: { approved: 90, rejected: 45 },
+        Charlie: { approved: 80, rejected: 60 },
+        Diana: { approved: 70, rejected: 40 },
+        Eve: { approved: 60, rejected: 50 }
+      },
+      locationData: {
+        Delhi: { critical: 80, high: 100, low: 40 },
+        Mumbai: { critical: 120, high: 180, low: 150 },
+        Gurugram: { critical: 60, high: 120, low: 90 },
+        Pune: { critical: 40, high: 80, low: 60 },
+        Bangalore: { critical: 70, high: 110, low: 80 },
+        Hyderabad: { critical: 50, high: 90, low: 70 }
+      },
+      departmentData: {
+        HR: { critical: 30, high: 80, low: 40 },
+        Finance: { critical: 60, high: 150, low: 70 },
+        IT: { critical: 40, high: 100, low: 60 },
+        Education: { critical: 20, high: 70, low: 30 },
+        Operations: { critical: 15, high: 60, low: 20 },
+        Legal: { critical: 25, high: 50, low: 35 },
+        Marketing: { critical: 18, high: 40, low: 25 }
+      }
+    };
+
+    let charts = {};
+    let chartSelections = {
+      locations: ['Delhi', 'Mumbai', 'Gurugram', 'Pune'],
+      departments: ['HR', 'Finance', 'IT', 'Education', 'Operations'],
+      approvers: []
+    };
+
+    function initMultiselect(btnId, optionsId, items) {
+      const btn = document.getElementById(btnId);
+      const options = document.getElementById(optionsId);
+
+      btn.addEventListener('click', (e) => {
+        e.stopPropagation();
+        document.querySelectorAll('.multiselect-options').forEach(o => {
+          if (o !== options) o.classList.add('hidden');
+        });
+        options.classList.toggle('hidden');
+      });
+
+      items.forEach(item => {
+        const div = document.createElement('div');
+        div.className = 'multiselect-option';
+        div.innerHTML = `<input type="checkbox" value="${item}"><span>${item}</span>`;
+        options.appendChild(div);
+      });
+    }
+
+    function initChartMultiselect(btnId, optionsId, textId, items, selectionKey, updateFn) {
+      const btn = document.getElementById(btnId);
+      const options = document.getElementById(optionsId);
+
+      btn.addEventListener('click', (e) => {
+        e.stopPropagation();
+        document.querySelectorAll('.multiselect-options').forEach(o => {
+          if (o !== options) o.classList.add('hidden');
+        });
+        options.classList.toggle('hidden');
+      });
+
+      items.forEach(item => {
+        const div = document.createElement('div');
+        div.className = 'multiselect-option';
+        div.innerHTML = `<input type="checkbox" value="${item}"><span>${item}</span>`;
+        div.addEventListener('click', (e) => {
+          const checkbox = div.querySelector('input');
+          checkbox.checked = !checkbox.checked;
+          const selected = Array.from(options.querySelectorAll('input:checked')).map(i => i.value);
+          chartSelections[selectionKey] = selected;
+          const text = document.getElementById(textId);
+          if (selectionKey === 'approvers') {
+            text.textContent = selected.length === 0 ? 'ALL' : selected.length === 1 ? selected[0] : `${selected.length} selected`;
+          } else {
+            text.textContent = selected.length === 0 ? `Select ${selectionKey}` : selected.length === 1 ? selected[0] : `${selected.length} selected`;
+          }
+          updateFn();
+        });
+        options.appendChild(div);
+      });
+    }
+
+    document.addEventListener('click', () => {
+      document.querySelectorAll('.multiselect-options').forEach(o => o.classList.add('hidden'));
+    });
+
+    initMultiselect('locationFilterBtn', 'locationFilterOptions', data.locations);
+    initMultiselect('departmentFilterBtn', 'departmentFilterOptions', data.departments);
+    initMultiselect('periodicityFilterBtn', 'periodicityFilterOptions', data.periodicities);
+    initMultiselect('criticalityFilterBtn', 'criticalityFilterOptions', data.criticalities);
+    initMultiselect('typeFilterBtn', 'typeFilterOptions', data.types);
+    initMultiselect('complianceFilterBtn', 'complianceFilterOptions', data.compliance);
+
+    // Initialize charts
+    const overallCtx = document.getElementById('overallChart').getContext('2d');
+    charts.overall = new Chart(overallCtx, {
+      type: 'bar',
+      data: {
+        labels: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun'],
+        datasets: [{
+          label: 'Total',
+          data: [200, 300, 400, 350, 450, 480],
+          backgroundColor: 'rgba(59,130,246,0.8)'
+        }, {
+          label: 'Approved with Red Flags',
+          data: [120, 180, 240, 210, 270, 288],
+          backgroundColor: 'rgba(34,197,94,0.8)'
+        }, {
+          label: 'Rejected',
+          data: [80, 120, 160, 140, 180, 192],
+          backgroundColor: 'rgba(239,68,68,0.8)'
+        }]
+      },
+      options: { scales: { y: { beginAtZero: true } }, responsive: true, maintainAspectRatio: true }
+    });
+
+    function updateApproverChart() {
+      const selected = chartSelections.approvers;
+      const approvers = selected.length === 0 ? data.approvers : selected;
+      
+      charts.approver.data.labels = approvers;
+      charts.approver.data.datasets[0].data = approvers.map(a => data.approverData[a].approved);
+      charts.approver.data.datasets[1].data = approvers.map(a => data.approverData[a].rejected);
+      charts.approver.update();
+    }
+
+    const approverCtx = document.getElementById('approverChart').getContext('2d');
+    charts.approver = new Chart(approverCtx, {
+      type: 'bar',
+      data: {
+        labels: ['Alice', 'Bob', 'Charlie', 'Diana', 'Eve'],
+        datasets: [
+          { label: 'Approved', data: [120, 90, 80, 70, 60], backgroundColor: 'rgba(34,197,94,0.8)' },
+          { label: 'Rejected', data: [30, 45, 60, 40, 50], backgroundColor: 'rgba(239,68,68,0.8)' }
+        ]
+      },
+      options: { scales: { y: { beginAtZero: true } }, responsive: true, maintainAspectRatio: true }
+    });
+
+    function updateLocationChart() {
+      const selected = chartSelections.locations;
+      if (selected.length === 0) {
+        charts.location.data.labels = [];
+        charts.location.data.datasets.forEach(ds => ds.data = []);
+      } else {
+        charts.location.data.labels = selected;
+        charts.location.data.datasets[0].data = selected.map(l => data.locationData[l].critical + data.locationData[l].high + data.locationData[l].low);
+        charts.location.data.datasets[1].data = selected.map(l => Math.round((data.locationData[l].critical + data.locationData[l].high) * 0.7));
+        charts.location.data.datasets[2].data = selected.map(l => Math.round((data.locationData[l].critical + data.locationData[l].high) * 0.3));
+      }
+      charts.location.update();
+    }
+
+    const locationCtx = document.getElementById('locationChart').getContext('2d');
+    charts.location = new Chart(locationCtx, {
+      type: 'bar',
+      data: {
+        labels: ['Delhi', 'Mumbai', 'Gurugram', 'Pune'],
+        datasets: [
+          { label: 'Total', data: [220, 450, 270, 180], backgroundColor: 'rgba(59,130,246,0.7)' },
+          { label: 'Approved', data: [154, 315, 189, 126], backgroundColor: 'rgba(34,197,94,0.7)' },
+          { label: 'Rejected', data: [66, 135, 81, 54], backgroundColor: 'rgba(239,68,68,0.7)' }
+        ]
+      },
+      options: { scales: { y: { beginAtZero: true } }, responsive: true, maintainAspectRatio: true }
+    });
+
+    const criticalityCtx = document.getElementById('criticalityChart').getContext('2d');
+    charts.criticality = new Chart(criticalityCtx, {
+      type: 'bar',
+      data: {
+        labels: ['Critical', 'High', 'Medium', 'Low'],
+        datasets: [
+          { label: 'Total', data: [320, 500, 300, 271], backgroundColor: 'rgba(59,130,246,0.7)' },
+          { label: 'Approved', data: [180, 280, 180, 161], backgroundColor: 'rgba(34,197,94,0.7)' },
+          { label: 'Rejected', data: [140, 220, 120, 110], backgroundColor: 'rgba(239,68,68,0.7)' }
+        ]
+      },
+      options: { scales: { y: { beginAtZero: true } }, responsive: true, maintainAspectRatio: true }
+    });
+
+    function updateDepartmentChart() {
+      const selected = chartSelections.departments;
+      if (selected.length === 0) {
+        charts.department.data.labels = [];
+        charts.department.data.datasets.forEach(ds => ds.data = []);
+      } else {
+        charts.department.data.labels = selected;
+        charts.department.data.datasets[0].data = selected.map(d => data.departmentData[d].critical + data.departmentData[d].high + data.departmentData[d].low);
+        charts.department.data.datasets[1].data = selected.map(d => Math.round((data.departmentData[d].critical + data.departmentData[d].high) * 0.7));
+        charts.department.data.datasets[2].data = selected.map(d => Math.round((data.departmentData[d].critical + data.departmentData[d].high) * 0.3));
+      }
+      charts.department.update();
+    }
+
+    const departmentCtx = document.getElementById('departmentChart').getContext('2d');
+    charts.department = new Chart(departmentCtx, {
+      type: 'bar',
+      data: {
+        labels: ['HR', 'Finance', 'IT', 'Education', 'Operations'],
+        datasets: [
+          { label: 'Total', data: [150, 280, 200, 120, 95], backgroundColor: 'rgba(59,130,246,0.7)' },
+          { label: 'Approved', data: [105, 196, 140, 84, 66.5], backgroundColor: 'rgba(34,197,94,0.7)' },
+          { label: 'Rejected', data: [45, 84, 60, 36, 28.5], backgroundColor: 'rgba(239,68,68,0.7)' }
+        ]
+      },
+      options: { scales: { y: { beginAtZero: true } }, responsive: true, maintainAspectRatio: true }
+    });
+
+    const natureCtx = document.getElementById('natureChart').getContext('2d');
+    charts.nature = new Chart(natureCtx, {
+      type: 'bar',
+      data: {
+        labels: ['Payment/Deposit', 'Registration', 'Return Filing', 'License Renewal', 'Statutory Filing'],
+        datasets: [
+          { label: 'Total', data: [140, 110, 180, 90, 160], backgroundColor: 'rgba(59,130,246,0.7)' },
+          { label: 'Approved', data: [95, 70, 120, 60, 110], backgroundColor: 'rgba(34,197,94,0.7)' },
+          { label: 'Rejected', data: [45, 40, 60, 30, 50], backgroundColor: 'rgba(239,68,68,0.7)' }
+        ]
+      },
+      options: { scales: { y: { beginAtZero: true } }, responsive: true, maintainAspectRatio: true }
+    });
+
+    initChartMultiselect('locationChartBtn', 'locationChartOptions', 'locationChartText', data.locations, 'locations', updateLocationChart);
+    initChartMultiselect('departmentChartBtn', 'departmentChartOptions', 'departmentChartText', data.departments, 'departments', updateDepartmentChart);
+    initChartMultiselect('approverChartBtn', 'approverChartOptions', 'approverChartText', data.approvers, 'approvers', updateApproverChart);
+
+    document.getElementById('applyFilters').addEventListener('click', () => {
+      console.log('Filters applied');
+    });
+
+    document.getElementById('resetFilters').addEventListener('click', () => {
+      document.querySelectorAll('.multiselect-options input').forEach(cb => cb.checked = false);
+      document.getElementById('dateRangeStart').value = '';
+      document.getElementById('dateRangeEnd').value = '';
+    });
+  </script>
+</body>
+</html>

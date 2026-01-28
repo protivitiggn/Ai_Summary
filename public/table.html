@@ -1,0 +1,343 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8"/>
+  <meta name="viewport" content="width=device-width,initial-scale=1"/>
+  <title>Red Flags – Data View</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+</head>
+
+<style>
+  thead th {
+    height: auto;
+    min-height: 80px;
+    vertical-align: middle;
+    word-wrap: break-word;
+    white-space: normal;
+    padding: 8px !important;
+  }
+  
+  tbody td {
+    vertical-align: middle;
+    padding: 8px !important;
+  }
+</style>
+
+<body class="bg-gray-100 font-sans">
+    <!-- filters section -->
+    <section class="bg-white p-4 rounded shadow mb-6">
+        <h3 class="font-semibold mb-3 text-sm">Filters</h3>
+        <div class="grid grid-cols-6 gap-3 mb-3">
+          <div class="multiselect-dropdown">
+            <button id="locationFilterBtn" class="w-full border rounded px-3 py-2 text-sm text-left bg-white hover:bg-gray-50 flex justify-between items-center">
+              <span id="locationFilterText">Location</span>
+              <span>▼</span>
+            </button>
+            <div id="locationFilterOptions" class="multiselect-options hidden"></div>
+          </div>
+          <div class="multiselect-dropdown">
+            <button id="departmentFilterBtn" class="w-full border rounded px-3 py-2 text-sm text-left bg-white hover:bg-gray-50 flex justify-between items-center">
+              <span id="departmentFilterText">Department</span>
+              <span>▼</span>
+            </button>
+            <div id="departmentFilterOptions" class="multiselect-options hidden"></div>
+          </div>
+          <div class="multiselect-dropdown">
+            <button id="periodicityFilterBtn" class="w-full border rounded px-3 py-2 text-sm text-left bg-white hover:bg-gray-50 flex justify-between items-center">
+              <span id="periodicityFilterText">Periodicity</span>
+              <span>▼</span>
+            </button>
+            <div id="periodicityFilterOptions" class="multiselect-options hidden"></div>
+          </div>
+          <div class="multiselect-dropdown">
+            <button id="criticalityFilterBtn" class="w-full border rounded px-3 py-2 text-sm text-left bg-white hover:bg-gray-50 flex justify-between items-center">
+              <span id="criticalityFilterText">Criticality</span>
+              <span>▼</span>
+            </button>
+            <div id="criticalityFilterOptions" class="multiselect-options hidden"></div>
+          </div>
+          <div class="multiselect-dropdown">
+            <button id="criticalityFilterBtn" class="w-full border rounded px-3 py-2 text-sm text-left bg-white hover:bg-gray-50 flex justify-between items-center">
+              <span id="criticalityFilterText">Approver</span>
+              <span>▼</span>
+            </button>
+            <div id="criticalityFilterOptions" class="multiselect-options hidden"></div>
+          </div>
+          <div class="multiselect-dropdown">
+            <button id="criticalityFilterBtn" class="w-full border rounded px-3 py-2 text-sm text-left bg-white hover:bg-gray-50 flex justify-between items-center">
+              <span id="criticalityFilterText">Submitter</span>
+              <span>▼</span>
+            </button>
+            <div id="criticalityFilterOptions" class="multiselect-options hidden"></div>
+          </div>
+          <div class="multiselect-dropdown">
+            <button id="typeFilterBtn" class="w-full border rounded px-3 py-2 text-sm text-left bg-white hover:bg-gray-50 flex justify-between items-center">
+              <span id="typeFilterText">Overall Status</span>
+              <span>▼</span>
+            </button>
+            <div id="typeFilterOptions" class="multiselect-options hidden"></div>
+          </div>
+          <div class="multiselect-dropdown">
+            <button id="complianceFilterBtn" class="w-full border rounded px-3 py-2 text-sm text-left bg-white hover:bg-gray-50 flex justify-between items-center">
+              <span id="complianceFilterText">Compliance nature</span>
+              <span>▼</span>
+            </button>
+            <div id="complianceFilterOptions" class="multiselect-options hidden"></div>
+          </div>
+          <div class="flex gap-3 col-span-2">
+            <input type="date" id="dateRangeStart" class="border rounded px-3 py-2 text-sm">
+            <input type="date" id="dateRangeEnd" class="border rounded px-3 py-2 text-sm">
+          </div>
+        </div>
+        <div class="relative flex items-center py-3">
+            <!-- Center buttons -->
+            <div class="absolute left-1/2 transform -translate-x-1/2 flex gap-3">
+                <button id="applyFilters"
+                    class="bg-blue-600 text-white px-4 py-2 rounded text-sm hover:bg-blue-700">
+                    Apply Filters
+                </button>
+        
+                <button id="resetFilters"
+                    class="bg-gray-300 text-gray-700 px-4 py-2 rounded text-sm hover:bg-gray-400">
+                    Reset
+                </button>
+            </div>
+        
+            <!-- Right button -->
+            <div class="ml-auto">
+                <button
+                    class="bg-gray-300 text-gray-700 px-4 py-2 rounded text-sm hover:bg-gray-400">
+                    Download Report
+                </button>
+            </div>
+        </div>        
+      </section>
+<div class="min-h-screen flex">
+<main class="flex-1 p-0">
+
+<section class="bg-white rounded shadow overflow-hidden">
+<div class="overflow-x-auto">
+
+<table class="min-w-full text-sm text-left border border-gray-300 border-collapse" style="table-layout: fixed;">
+
+<thead class="bg-gray-100">
+
+<!-- ===== HEADER ROW 1 ===== -->
+<tr>
+  <th rowspan="3" class="px-3 py-2 border">ID</th>
+  <th rowspan="3" class="px-3 py-2 border">Compliance Title</th>
+  <th rowspan="3" class="px-3 py-2 border">Company</th>
+  <th rowspan="3" class="px-3 py-2 border">Location</th>
+  <th rowspan="3" class="px-3 py-2 border">Department</th>
+  <th rowspan="3" class="px-3 py-2 border">Compliance Type</th>
+  <th rowspan="3" class="px-3 py-2 border">Criticality</th>
+  
+  <th rowspan="3" class="px-3 py-2 border">Due Date</th>
+  <th rowspan="3" class="px-3 py-2 border">Status</th>
+  <th rowspan="3" class="px-3 py-2 border">Submitter</th>
+  <th rowspan="3" class="px-3 py-2 border">Approver</th>
+
+  <th colspan="3" class="px-3 py-2 border text-center font-semibold">
+    Authority Check
+  </th>
+
+  <th colspan="3" class="px-3 py-2 border text-center font-semibold">Entity Name Check</th>
+  <th colspan="3" class="px-3 py-2 border text-center font-semibold">Actual Date of Compliance Check</th>
+  <th colspan="3" class="px-3 py-2 border text-center font-semibold">Amount Check</th>
+  <th colspan="3" class="px-3 py-2 border text-center font-semibold">Form No. Check</th>
+  <th colspan="3" class="px-3 py-2 border text-center font-semibold">Form Name Check</th>
+  <th colspan="3" class="px-3 py-2 border text-center font-semibold">Period Check</th>
+
+  <th rowspan="3" class="px-3 py-2 border">PDF Forgery</th>
+  <th rowspan="3" class="px-3 py-2 border">Metadata</th>
+  <th rowspan="3" class="px-3 py-2 border">Blank Document</th>
+  <th rowspan="3" class="px-3 py-2 border">Overall Status</th>
+</tr>
+
+<!-- ===== HEADER ROW 2 ===== -->
+<tr>
+  <th rowspan="2" class="px-3 py-2 border">User-Reported Info</th>
+  <th rowspan="2" class="px-3 py-2 border">Evidence Info</th>
+  <th rowspan="2" class="px-3 py-2 border">AI Result</th>
+
+  <th class="px-3 py-2 border text-center">User-Reported Info</th>
+  <th class="px-3 py-2 border text-center">Evidence Info</th>
+  <th class="px-3 py-2 border text-center">AI Result</th>
+  
+  <th class="px-3 py-2 border text-center">User-Reported Info</th>
+  <th class="px-3 py-2 border text-center">Evidence Info</th>
+  <th class="px-3 py-2 border text-center">AI Result</th>
+  
+  <th class="px-3 py-2 border text-center">User-Reported Info</th>
+  <th class="px-3 py-2 border text-center">Evidence Info</th>
+  <th class="px-3 py-2 border text-center">AI Result</th>
+  
+  <th class="px-3 py-2 border text-center">User-Reported Info</th>
+  <th class="px-3 py-2 border text-center">In Evidence</th>
+  <th class="px-3 py-2 border text-center">AI Result</th>
+  
+  <th class="px-3 py-2 border text-center">User-Reported Info</th>
+  <th class="px-3 py-2 border text-center">Evidence Info</th>
+  <th class="px-3 py-2 border text-center">AI Result</th>
+  
+  <th class="px-3 py-2 border text-center">User-Reported Info</th>
+  <th class="px-3 py-2 border text-center">Evidence Info</th>
+  <th class="px-3 py-2 border text-center">AI Result</th>
+</tr>
+
+<!-- ===== HEADER ROW 3 ===== -->
+
+
+</thead>
+
+<tbody id="tableBody"></tbody>
+</table>
+</div>
+
+<!-- Pagination -->
+<div class="flex justify-between items-center px-4 py-3 border-t">
+  <span id="pageInfo" class="text-sm text-gray-600"></span>
+  <div class="flex gap-2">
+    <button id="prevPage" class="px-3 py-1 border rounded">Prev</button>
+    <button id="nextPage" class="px-3 py-1 border rounded">Next</button>
+  </div>
+</div>
+
+</section>
+</main>
+</div>
+
+<script>
+const rows = Array.from({ length: 30 }, (_, i) => ({
+  id: i + 1,
+  complianceTitle: 'Compliance Title ' + (i + 1),
+  company: 'Protiviti',
+  location: ['Delhi','Mumbai','Pune','Bangalore'][i % 4],
+  department: ['HR','Finance','IT','Legal'][i % 4],
+  compliance: 'Statutory',
+  criticality: ['High','Medium','Low'][i % 3],
+  
+  due: '2026-03-31',
+  status: 'Approved' ,
+  Submitter: 'User ' + ((i % 5) + 1),
+  approver: 'User ' + ((i % 5) + 1),
+
+  authority: {
+    user: 'Yes',
+    evidence: 'Uploaded',
+    ai: i % 2 ? 'Pass' : 'Review'
+  },
+
+  submission: {
+    companyName: {
+      user: 'Yes',
+      evidence: 'Attached',
+      ai: i % 2 ? 'Pass' : 'Fail'
+    },
+    date: {
+      user: 'Yes',
+      evidence: 'Attached',
+      ai: i % 3 ? 'Pass' : 'Fail'
+    },
+    challan: {
+      user: 'Yes',
+      evidence: 'Attached',
+      ai: i % 4 ? 'Pass' : 'Fail'
+    },
+    formNo: {
+      user: 'Yes',
+      evidence: 'Attached',
+      ai: i % 2 ? 'Pass' : 'Fail'
+    },
+    formName: {
+      user: 'Yes',
+      evidence: 'Attached',
+      ai: i % 3 ? 'Pass' : 'Fail'
+    },
+    period: {
+      user: 'Yes',
+      evidence: 'Attached',
+      ai: i % 4 ? 'Pass' : 'Fail'
+    },
+    
+  },
+
+  pdfForgery: i % 2 ? 'Pass' : 'Fail',
+  metadata: i % 3 ? 'Pass' : 'Fail',
+  blankDoc: i % 4 ? 'Pass' : 'Fail',
+  overallStatus: i % 4 ? 'Pass' : 'Fail'
+}));
+
+const pageSize = 10;
+let currentPage = 1;
+
+function renderTable() {
+  const start = (currentPage - 1) * pageSize;
+  const pageRows = rows.slice(start, start + pageSize);
+
+  document.getElementById('tableBody').innerHTML =
+    pageRows.map(r => `
+      <tr class="hover:bg-gray-50">
+        <td class="px-3 py-2 border">${r.id}</td>
+        <td class="px-3 py-2 border">${r.complianceTitle}</td>
+        <td class="px-3 py-2 border">${r.company}</td>
+        <td class="px-3 py-2 border">${r.location}</td>
+        <td class="px-3 py-2 border">${r.department}</td>
+        <td class="px-3 py-2 border">${r.compliance}</td>
+        <td class="px-3 py-2 border">${r.criticality}</td>
+       
+        <td class="px-3 py-2 border">${r.due}</td>
+        <td class="px-3 py-2 border">${r.status}</td>
+        <td class="px-3 py-2 border">${r.Submitter}</td>
+        <td class="px-3 py-2 border">${r.approver}</td>
+
+        <td class="px-3 py-2 border">${r.authority.user}</td>
+        <td class="px-3 py-2 border">${r.authority.evidence}</td>
+        <td class="px-3 py-2 border font-semibold">${r.authority.ai}</td>
+
+        <td class="px-3 py-2 border">${r.submission.companyName.user}</td>
+        <td class="px-3 py-2 border">${r.submission.companyName.evidence}</td>
+        <td class="px-3 py-2 border font-semibold">${r.submission.companyName.ai}</td>
+
+        <td class="px-3 py-2 border">${r.submission.date.user}</td>
+        <td class="px-3 py-2 border">${r.submission.date.evidence}</td>
+        <td class="px-3 py-2 border font-semibold">${r.submission.date.ai}</td>
+
+        <td class="px-3 py-2 border">${r.submission.challan.user}</td>
+        <td class="px-3 py-2 border">${r.submission.challan.evidence}</td>
+        <td class="px-3 py-2 border font-semibold">${r.submission.challan.ai}</td>
+
+        <td class="px-3 py-2 border">${r.submission.formNo.user}</td>
+        <td class="px-3 py-2 border">${r.submission.formNo.evidence}</td>
+        <td class="px-3 py-2 border font-semibold">${r.submission.formNo.ai}</td>
+
+        <td class="px-3 py-2 border">${r.submission.formName.user}</td>
+        <td class="px-3 py-2 border">${r.submission.formName.evidence}</td>
+        <td class="px-3 py-2 border font-semibold">${r.submission.formName.ai}</td>
+
+        <td class="px-3 py-2 border">${r.submission.period.user}</td>
+        <td class="px-3 py-2 border">${r.submission.period.evidence}</td>
+        <td class="px-3 py-2 border font-semibold">${r.submission.period.ai}</td>
+
+        <td class="px-3 py-2 border font-semibold">${r.pdfForgery}</td>
+        <td class="px-3 py-2 border font-semibold">${r.metadata}</td>
+        <td class="px-3 py-2 border font-semibold">${r.blankDoc}</td>
+        <td class="px-3 py-2 border font-semibold">${r.overallStatus}</td>
+      </tr>
+    `).join('');
+
+  document.getElementById('pageInfo').textContent =
+    `Page ${currentPage} of ${Math.ceil(rows.length / pageSize)}`;
+}
+
+document.getElementById('prevPage').onclick = () => {
+  if (currentPage > 1) { currentPage--; renderTable(); }
+};
+document.getElementById('nextPage').onclick = () => {
+  if (currentPage < rows.length / pageSize) { currentPage++; renderTable(); }
+};
+
+renderTable();
+</script>
+</body>
+</html>
