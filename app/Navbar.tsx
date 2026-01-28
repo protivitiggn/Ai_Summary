@@ -4,21 +4,25 @@ import { useState, useRef, useEffect } from 'react';
 import { ChevronDown, User } from 'lucide-react';
 
 interface NavbarProps {
-  companies?: string[];
-  roles?: string[];
-  userInitials?: string;
-  userName?: string;
-  onTabChange?: (tab: 'dashboard' | 'data') => void;
-}
+    companies?: string[];
+    roles?: string[];
+    userInitials?: string;
+    userName?: string;
+    activeTab: 'dashboard' | 'data';
+    onTabChange: (tab: 'dashboard' | 'data') => void;
+  }
+  
 
-export default function Navbar({
-  companies = ['Protiviti'],
-  roles = ['Approver'],
-  userInitials = 'NK',
-  userName = 'Nikhil Kumar',
-  onTabChange,
-}: NavbarProps) {
-  const [activeTab, setActiveTab] = useState<'dashboard' | 'data'>('dashboard');
+  export default function Navbar({
+    companies = ['Protiviti'],
+    roles = ['Approver'],
+    userInitials = 'NK',
+    userName = 'Nikhil Kumar',
+    activeTab,
+    onTabChange,
+  }: NavbarProps) {
+  
+//   const [activeTab, setActiveTab] = useState<'dashboard' | 'data'>('dashboard');
   const [selectedCompany, setSelectedCompany] = useState(companies[0]);
   const [selectedRole, setSelectedRole] = useState(roles[0]);
   const [openDropdown, setOpenDropdown] = useState<string | null>(null);
@@ -29,9 +33,9 @@ export default function Navbar({
 
   // Handle tab change
   const handleTabChange = (tab: 'dashboard' | 'data') => {
-    setActiveTab(tab);
-    onTabChange?.(tab);
+    onTabChange(tab);
   };
+  
 
   // Close dropdowns when clicking outside
   useEffect(() => {
